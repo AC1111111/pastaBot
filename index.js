@@ -15,9 +15,15 @@ const {
 } = require("discord.js");
 const Variables = require("./variables.js");
 const bannedwords = require("./commands/utility/bannedwords.js");
+const axios = require("axios");
+const express = require("express");
 
 //Init variables
 const token = process.env.TOKEN;
+const app = express();
+const port = process.env.PORT || 3000;
+const deploymentLink = "http://localhost:5000/"
+
 //Create client instance
 const client = new Client({
 	intents: [
@@ -390,12 +396,25 @@ function callBannedWordEvent() {
 		`<@${userID}> Perpetual reminder that Hollow Knight Silksong will never release`
 	);
 }*/
+/*API endpoint. If we ever want to fuck around with REST we'll 
+need to move everything into seperate folders and shit*/
+app.get('/', (req, res) => {
+	res.send("Make AWS free or I will simply steal")
+})
 
-//Send a message to a channel to keep pasta online
+//Server listening on port
+app.listen(port, () => {
+	console.log(`Listening on port ${port}`)
+})
+
+//Make an API call to keep pasta alive
 client.on("ready", () => {
-	setInterval(() => {
+	setInterval(async () => {
 		client.channels.cache.get("1360946766526283917")
 			.send("Make AWS free or I will simply steal")
+
+		const result = await axios.get(deploymentLink)
+		console.log(result.data)
 	}, 14 * 60 * 1000)
 })
 
