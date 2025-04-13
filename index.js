@@ -22,7 +22,7 @@ const express = require("express");
 const token = process.env.TOKEN;
 const app = express();
 const port = process.env.PORT || 3000;
-const deploymentLink = "http://localhost:5000/"
+const deploymentLink = process.env.DEPLOYMENT_LINK;
 
 //Create client instance
 const client = new Client({
