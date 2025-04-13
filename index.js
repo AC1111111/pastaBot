@@ -1,3 +1,4 @@
+//Include dependencies
 require("dotenv").config();
 const fs = require("node:fs");
 const path = require("node:path");
@@ -14,7 +15,9 @@ const {
 } = require("discord.js");
 const Variables = require("./variables.js");
 const bannedwords = require("./commands/utility/bannedwords.js");
-token = process.env.TOKEN;
+
+//Init variables
+const token = process.env.TOKEN;
 //Create client instance
 const client = new Client({
 	intents: [
