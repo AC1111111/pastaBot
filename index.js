@@ -139,15 +139,6 @@ async function initBannedWords() {
 	var bannedwords = Variables.generateBannedWords();
 }
 initBannedWords();
-// Example usage: Check if date has changed every 1 minute
-setInterval(() => {
-	const solBadguyID = "1190997030542258319";
-	const _165ID = "714435782579978272";
-	// Uncomment this later
-	if (hasDateChanged()) {
-		send165Message(solBadguyID, _165ID);
-	}
-}, 120000);
 
 // TODO: We should probably put this entire method somewhere else for readability but i cba to do it rn
 //Byte, why am I not included in the test command...
@@ -337,7 +328,7 @@ async function callSploogeEvent() {
 	return await content;
 }
 
-/*async function callEddEvent() {
+async function callEddEvent() {
 	const initDate = new Date("February 18, 2024 00:00:00");
 	var fagCounter = 0;
 	var update;
@@ -380,7 +371,7 @@ async function callSploogeEvent() {
 	dateToDisplay = fagCounterDoc.initDate;
 	var content = `Edd has been homophobic ${numberToDisplay} times since ${dateToDisplay}`;
 	return content;
-}*/
+}
 
 function callBannedWordEvent() {
 	console.log(
@@ -390,12 +381,7 @@ function callBannedWordEvent() {
 		"whoopsie doopsie you did a fuckie wuckie. get timed out lmao");
 }
 
-/*function send165Message(channelID, userID) {
-	const channel = client.channels.cache.get(channelID);
-	channel.send(
-		`<@${userID}> Perpetual reminder that Hollow Knight Silksong will never release`
-	);
-}*/
+
 /*API endpoint. If we ever want to fuck around with REST we'll 
 need to move everything into seperate folders and shit*/
 app.get('/', (req, res) => {
