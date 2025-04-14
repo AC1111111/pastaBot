@@ -1,5 +1,6 @@
 //Include dependencies
 require("dotenv").config();
+
 const fs = require("node:fs");
 const path = require("node:path");
 const {
@@ -188,8 +189,11 @@ client.on(Events.MessageCreate, async (message) => {
 		) {
 			content = await callSploogeEvent();
 			message.reply(content);
+		} else if (messageString.includes("dumpy") && messageString.includes("install")) {
+			content = await callDumpyEvent();
+			message.reply(content)
 		}
-		// I fucking hate nimbus dude (real)
+	
 	} else if (message.author.id === UserID.EddID) {
 		if (message.content.includes("fag")) {
 			content = await callEddEvent();
@@ -325,6 +329,11 @@ async function callSploogeEvent() {
 	pastaCollection.updateOne(filter, updateDoc);
 	content = `<@806964705008025611> has jacked off ${sploogeDoc.jacks - 1
 		} times since ${initDate}`;
+	return await content;
+}
+
+async function callDumpyEvent(){
+	content = "Stop talking about dumpies and move out of the dump. broke ass"
 	return await content;
 }
 
