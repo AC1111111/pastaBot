@@ -1,12 +1,13 @@
 //Include dependencies
 require("dotenv").config();
 
+const pastaCollection = require("../pastaBot/PastaCollection.json")
 const fs = require("node:fs");
 const path = require("node:path");
-const {
+/*const {
 	MongoClient,
 	ServerApiVersion,
-} = require("mongodb");
+} = require("mongodb");*/
 const {
 	Client,
 	Events,
@@ -37,26 +38,53 @@ const client = new Client({
 
 client.commands = new Collection();
 
+/*
 //Build MongoDB URI
 mongoPassword = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://adminpastabot:${mongoPassword}@clusterpasta.ketfdz1.mongodb.net/?retryWrites=true&w=majority`;
+*/
 
 //Console log to check if Pasta's still alive
 client.once(Events.ClientReady, (readyClient) => {
 	console.log(`We up ${readyClient.user.tag}`);
 });
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const mongoClient = new MongoClient(uri, {
-	serverApi: {
-		version: ServerApiVersion.v1,
-		strict: true,
-		deprecationErrors: true,
-	},
-});
+/*I'm gonna try and do this the write way by writing helper functions
+This should also make it easier to add more counters later down the line */
+function readPastaCollection(){
+	try{
+		const data = fs.readFileSync(pastaCollection, 'utf-8')
+		return JSON.parse(data)
+	}
+	catch(error){
+		console.error("Couldn't read PastaCollection.json", error)
+	}
+}
 
-var pastaDB;
-var pastaCollection;
+
+function writeToPastaCollection(data){
+	try{
+		fs.writeFileSync(pastaCollection, JSON.stringify(data, null, 2), 'utf-8')
+	}
+	catch(error){
+		console.error("Couldn't write to PastaCollection.json:", error)
+	}
+}
+
+function updateCounter(collection, name, counterName, initDate){
+	var doc = collection.find(item => item.name === name || item.documentName === name);
+	if(!doc){
+		doc = {
+			name: name,
+			[counterName]: 0,
+			initDate: initDate || new Date().toISOString()
+		};
+		collection.push(doc);
+	}
+	doc[fieldName] = (doc[counterName] || 0) + 1
+	return doc;
+}
+
 async function run() {
 	try {
 		// Connect the client to the server    (optional starting in v4.7)
@@ -144,9 +172,7 @@ initBannedWords();
 // TODO: We should probably put this entire method somewhere else for readability but i cba to do it rn
 //Byte, why am I not included in the test command...
 client.on(Events.MessageCreate, async (message) => {
-	await mongoClient.connect();
-	pastaDB = mongoClient.db("PastaDB");
-	pastaCollection = pastaDB.collection("PastaCollection");
+	pastaCollection = readPastaCollection();
 	// Basically Enums
 	const ChannelID = {
 		NutGeneralId: "1162085095532929144",
@@ -225,111 +251,26 @@ client.on(Events.MessageCreate, async (message) => {
 			contentString = await callHellcatPersonEvent();
 			message.reply({ content: contentString });
 		}
-	} else if (message.author.id === UserID.ByteID) {
+	} else if (message.author.id === UserID.ByteID || message.author.id === UserID.FaxID) {
 		if (messageString === "test") {
 			message.reply("Fuck you");
 		}
 	}
-
-	/*
-	var bannedWords = Variables.getBannedWords();
-	contentString = "";
-	for (var i = 0; i < bannedWords.length; i++) {
-		word = bannedWords[i].toLowerCase();
-		if (
-			messageString.includes(word) &&
-			message.author.id !== UserID.PastaID
-		) {
-			message.guild.members.cache.forEach(
-				(member) => {
-					if (member.id === message.author.id) {
-						contentString =
-							callBannedWordEvent();
-						member
-							.timeout(1 * 60 * 1000)
-							.then(() =>
-								console.log(
-									"Timed out " +
-										member.name
-								)
-							)
-							.catch(console.log);
-					}
-				}
-			);
-			message.reply(contentString);
-		}
-	}
-	*/
 });
 async function callHellcatPersonEvent() {
-	const initDate = new Date("February 18, 2024 00:00:00");
-	var hellcatPersonCounter = 0;
-	var update;
-	const projection = {
-		name: 1,
-		hellcatPersonCounter: 1,
-		initDate: 1,
-	};
-	const cursor = pastaCollection
-		.find({ name: "hellcatPersonCounter" })
-		.project(projection);
-	var welfareReceiverDoc = (await cursor.hasNext())
-		? await cursor.next()
-		: null;
-	// Find out if friedChickenMuncherCounter exists already
-	if (welfareReceiverDoc === null) {
-		hellcatPersonCounter = 0;
-		update = {
-			$set: {
-				name: "hellcatPersonCounter",
-				hellcatPersonCounter:
-					hellcatPersonCounter + 1,
-				initDate: initDate,
-			},
-		};
-	} else {
-		hellcatPersonCounter =
-			await welfareReceiverDoc.hellcatPersonCounter;
-		update = {
-			$set: {
-				name: "hellcatPersonCounter",
-				hellcatPersonCounter:
-					hellcatPersonCounter + 1,
-				initDate: initDate,
-			},
-		};
-	}
-	const query = { name: "hellcatPersonCounter" };
-	const options = { upsert: true };
-	await pastaCollection.updateOne(query, update, options);
-
-	numberToDisplay = hellcatPersonCounter + 1;
-	dateToDisplay = welfareReceiverDoc.initDate;
-	var content = `Board has said the n-word ${numberToDisplay} times since ${dateToDisplay}`;
-	return content;
+	const collection = readPastaCollection()
+	const initDate = "2024-02-18T00:00:00Z" //Fuck this I'm hard coding
+	var doc = updateCounter(collection, "hellcatPersonCounter", "counter", initDate)
+	writeToPastaCollection(collection)
+	return `Board has said the n-word ${doc.hellcatPersonCounter} times since ${initDate}`;
 }
 
 async function callSploogeEvent() {
-	// Connect to PastaDB within MongoDB
-	const sploogeDocArray = await pastaCollection
-		.find({
-			documentName: "splooge",
-		})
-		.project({ jacks: 1, initDate: 1, _id: 0 })
-		.toArray();
-	// access the first and only element now
-	const sploogeDoc = sploogeDocArray[0];
-	const initDate = sploogeDoc.initDate;
-	const filter = { documentName: "splooge" };
-	const newJacks = sploogeDoc.jacks + 1;
-	const updateDoc = {
-		$set: { jacks: newJacks },
-	};
-	pastaCollection.updateOne(filter, updateDoc);
-	content = `<@806964705008025611> has jacked off ${sploogeDoc.jacks - 1
-		} times since ${initDate}`;
-	return await content;
+	const collection = readPastaCollection()
+	const initDate = "2024-02-12T23:00:00Z"
+	var doc = updateCounter(collection, "splooge", "counter", initDate)
+	writeToPastaCollection(collection)
+	return `<@806964705008025611> has jacked off ${doc.counter} times since ${initDate}`
 }
 
 async function callDumpyEvent(){
@@ -339,45 +280,9 @@ async function callDumpyEvent(){
 
 async function callEddEvent() {
 	const initDate = new Date("February 18, 2024 00:00:00");
-	var fagCounter = 0;
-	var update;
-	const projection = {
-		name: 1,
-		fagCounter: 1,
-		initDate: 1,
-	};
-	const cursor = pastaCollection
-		.find({ name: "fagCounter" })
-		.project(projection);
-	var fagCounterDoc = (await cursor.hasNext())
-		? await cursor.next()
-		: null;
-	// Find out if fagCounter exists already
-	if (fagCounterDoc === null) {
-		fagCounter = 0;
-		update = {
-			$set: {
-				name: "fagCounter",
-				fagCounter: fagCounter + 1,
-				initDate: initDate,
-			},
-		};
-	} else {
-		fagCounter = await fagCounterDoc.fagCounter;
-		update = {
-			$set: {
-				name: "fagCounter",
-				fagCounter: fagCounter + 1,
-				initDate: initDate,
-			},
-		};
-	}
-	const query = { name: "fagCounter" };
-	const options = { upsert: true };
-	await pastaCollection.updateOne(query, update, options);
-
-	numberToDisplay = fagCounter + 1;
-	dateToDisplay = fagCounterDoc.initDate;
+	const collection = readPastaCollection()
+	var doc = updateCounter(collection, "fagCounter", "counter", initDate)
+	writeToPastaCollection(collection)
 	var content = `Edd has been homophobic ${numberToDisplay} times since ${dateToDisplay}`;
 	return content;
 }

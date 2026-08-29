@@ -1,0 +1,39 @@
+[
+    {
+        "_id": {
+            "$oid": "65d4057fe3518119e230f5dc"
+        },
+        "name": "fagCounter",
+        "counter": 22,
+        "initDate": {
+            "$date": "2024-02-18T00:00:00Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "65d179c8b035dec14f7412fc"
+        },
+        "name": "hellcatPersonCounter",
+        "counter": 200,
+        "initDate": {
+            "$date": "2024-02-18T00:00:00Z"
+        }
+    },
+    {
+        "_id": {
+            "$oid": "669ec27f66755e98e5b5597e"
+        },
+        "name": "autumn",
+        "rating": 0
+    },
+    {
+        "_id": {
+            "$oid": "65ca6561b6fd58e0f59105ff"
+        },
+        "counter": 441,
+        "name": "splooge",
+        "initDate": {
+            "$date": "2024-02-12T23:00:00Z"
+        }
+    }
+]
