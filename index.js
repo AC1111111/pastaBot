@@ -84,7 +84,7 @@ function updateCounter(collection, name, counterName, initDate) {
 		};
 		collection.push(doc);
 	}
-	doc[fieldName] = (doc[counterName] || 0) + 1
+	doc[counterName] = (doc[counterName] || 0) + 1
 	return doc;
 }
 
