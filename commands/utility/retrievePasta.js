@@ -21,11 +21,12 @@ module.exports = {
 	async execute(interaction) {
 		length = copyPastaCollection.length
 		if (length > 0) {
-			const doc = await copyPastaCollection.find((pasta)=> pasta.title == interaction.options.getString("title"));
+			const doc = await copyPastaCollection.find((pasta) => pasta.title == interaction.options.getString("title"));
 
 			await interaction.reply(doc.body);
+		} else {
+			// This should catch errors like "file not found" but im too lazy to do it rn so im putting it in this "else".
+			await interaction.reply(`${interaction.options.getString("title")} is not an existing pasta. Make that shit before you send it.`);
 		}
-
-		await interaction.reply(`${interaction.options.getString("title")} is not an existing pasta. Make that shit before you send it.`);
 	},
 };

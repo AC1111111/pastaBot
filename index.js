@@ -1,7 +1,7 @@
 //Include dependencies
 require("dotenv").config();
-
-const pastaCollection = require("../pastaBot/PastaCollection.json")
+// TODO remove the following line of code if this works
+// const pastaCollection = require("../pastaBot/PastaCollection.json")
 const fs = require("node:fs");
 const path = require("node:path");
 /*const {
@@ -19,6 +19,7 @@ const Variables = require("./variables.js");
 const bannedwords = require("./commands/utility/bannedwords.js");
 const axios = require("axios");
 const express = require("express");
+const { log } = require("node:console");
 
 //Init variables
 const token = process.env.TOKEN;
@@ -51,29 +52,31 @@ client.once(Events.ClientReady, (readyClient) => {
 
 /*I'm gonna try and do this the write way by writing helper functions
 This should also make it easier to add more counters later down the line */
-function readPastaCollection(){
-	try{
-		const data = fs.readFileSync(pastaCollection, 'utf-8')
+function readPastaCollection() {
+	try {
+		// Pretty sure what's going on here is fs.readFileSync not working with an imported json. 
+		// Gonna try just giving it the relative path.
+		//const data = fs.readFileSync(pastaCollection, 'utf-8')
+		const data = fs.readFileSync("../pastaBot/PastaCollection.json")
 		return JSON.parse(data)
 	}
-	catch(error){
+	catch (error) {
 		console.error("Couldn't read PastaCollection.json", error)
 	}
 }
 
-
-function writeToPastaCollection(data){
-	try{
+function writeToPastaCollection(data) {
+	try {
 		fs.writeFileSync(pastaCollection, JSON.stringify(data, null, 2), 'utf-8')
 	}
-	catch(error){
+	catch (error) {
 		console.error("Couldn't write to PastaCollection.json:", error)
 	}
 }
 
-function updateCounter(collection, name, counterName, initDate){
+function updateCounter(collection, name, counterName, initDate) {
 	var doc = collection.find(item => item.name === name || item.documentName === name);
-	if(!doc){
+	if (!doc) {
 		doc = {
 			name: name,
 			[counterName]: 0,
@@ -84,22 +87,6 @@ function updateCounter(collection, name, counterName, initDate){
 	doc[fieldName] = (doc[counterName] || 0) + 1
 	return doc;
 }
-
-async function run() {
-	try {
-		// Connect the client to the server    (optional starting in v4.7)
-		await mongoClient.connect();
-		// Send a ping to confirm a successful connection
-		await mongoClient.db("admin").command({ ping: 1 });
-		console.log(
-			"Pinged your deployment. You successfully connected to MongoDB!"
-		);
-	} finally {
-		// Ensures that the client will close when you finish/error
-		await mongoClient.close();
-	}
-}
-run().catch(console.dir);
 
 //Setting up the bot to read the path and all of the commands
 const foldersPath = path.join(__dirname, "commands");
@@ -170,7 +157,7 @@ async function initBannedWords() {
 initBannedWords();
 
 // TODO: We should probably put this entire method somewhere else for readability but i cba to do it rn
-//Byte, why am I not included in the test command...
+//Byte, why am I not included in the test command... // My bad gang I forgor
 client.on(Events.MessageCreate, async (message) => {
 	pastaCollection = readPastaCollection();
 	// Basically Enums
@@ -219,7 +206,7 @@ client.on(Events.MessageCreate, async (message) => {
 			content = await callDumpyEvent();
 			message.reply(content)
 		}
-	
+
 	} else if (message.author.id === UserID.EddID) {
 		if (message.content.includes("fag")) {
 			content = await callEddEvent();
@@ -273,7 +260,7 @@ async function callSploogeEvent() {
 	return `<@806964705008025611> has jacked off ${doc.counter} times since ${initDate}`
 }
 
-async function callDumpyEvent(){
+async function callDumpyEvent() {
 	content = "Stop talking about dumpies and move out of the dump. broke ass"
 	return await content;
 }

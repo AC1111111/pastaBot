@@ -1,22 +1,7 @@
 require("dotenv").config();
-const {
-	MongoClient,
-	ServerApiVersion,
-} = require("mongodb");
 
 const { EmbedBuilder } = require("discord.js");
 const { SlashCommandBuilder } = require("discord.js");
-
-mongoPassword = process.env.MONGO_PASSWORD;
-const uri = `mongodb+srv://adminpastabot:${mongoPassword}@clusterpasta.ketfdz1.mongodb.net/?retryWrites=true&w=majority`;
-
-const mongoClient = new MongoClient(uri, {
-	serverApi: {
-		version: ServerApiVersion.v1,
-		strict: true,
-		deprecationErrors: true,
-	},
-});
 
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, "0");
@@ -58,9 +43,8 @@ module.exports = {
 		pastaCollection.updateOne(filter, updateDoc);
 		console.log("Splooge Initdate: " + initDate);
 		await interaction.reply({
-			content: `<@806964705008025611> has jacked off ${
-				sploogeDoc.jacks - 1
-			} times since ${initDate}`,
+			content: `<@806964705008025611> has jacked off ${sploogeDoc.jacks - 1
+				} times since ${initDate}`,
 		});
 	},
 };
