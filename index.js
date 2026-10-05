@@ -48,8 +48,7 @@ const UserID = {
 // Never before invented: REUSABLE CODE. I'm a genius with the code Fax. 
 module.exports = {
 	pastaCollectionPath, UserID,
-	writeToPastaCollection, readPastaCollection,
-	callSploogeEvent,
+	writeToPastaCollection, readPastaCollection, callSploogeEvent,
 }
 
 //Create client instance
@@ -77,11 +76,9 @@ client.once(Events.ClientReady, (readyClient) => {
 
 /*I'm gonna try and do this the write way by writing helper functions
 This should also make it easier to add more counters later down the line */
+// This is already damn good work, Fax. I think we should make all of these functions async tho. I doubt it would matter very much in practice but they could rarely block other stuff 
 function readPastaCollection() {
 	try {
-		// Pretty sure what's going on here is fs.readFileSync not working with an imported json. 
-		// Gonna try just giving it the relative path.
-		//const data = fs.readFileSync(pastaCollection, 'utf-8')
 		const data = fs.readFileSync(pastaCollectionPath)
 		return JSON.parse(data)
 	}
