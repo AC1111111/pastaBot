@@ -52,6 +52,7 @@ const rest = new REST().setToken(token);
 		);
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
+		// I'm not gonna lie, Fax, this comment looked AI generated for a second until I remembered its just copy pasted from the tutorial. I damn near had a heart attack
 		console.error(error);
 	}
 })();

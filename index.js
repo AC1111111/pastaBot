@@ -28,6 +28,30 @@ const app = express();
 const port = process.env.PORT || 3000;
 const deploymentLink = process.env.DEPLOYMENT_LINK;
 
+const ChannelID = {
+	NutGeneralId: "1162085095532929144",
+	StriveID: "1162161285618737184",
+	SolBadguyID: "1190997030542258319",
+	TekkenEightID: "1206822417541111848",
+	BotTestCommandsID: "1190973937337769986",
+};
+const UserID = {
+	FaxID: "405367041999241216",
+	ByteID: "253108416518553600",
+	SploofID: "806964705008025611",
+	BoardID: "1081308415260885052",
+	NimbusID: "720155708758425670",
+	EddID: "515997929241182238",
+	PastaID: "1190966073571426374",
+};
+
+// Never before invented: REUSABLE CODE. I'm a genius with the code Fax. 
+module.exports = {
+	pastaCollectionPath, UserID,
+	writeToPastaCollection, readPastaCollection,
+	callSploogeEvent,
+}
+
 //Create client instance
 const client = new Client({
 	intents: [
@@ -161,24 +185,6 @@ initBannedWords();
 //Byte, why am I not included in the test command... // My bad gang I forgor
 client.on(Events.MessageCreate, async (message) => {
 	pastaCollection = readPastaCollection();
-	// Basically Enums
-	const ChannelID = {
-		NutGeneralId: "1162085095532929144",
-		StriveID: "1162161285618737184",
-		SolBadguyID: "1190997030542258319",
-		TekkenEightID: "1206822417541111848",
-		BotTestCommandsID: "1190973937337769986",
-	};
-	const UserID = {
-		FaxID: "405367041999241216",
-		ByteID: "253108416518553600",
-		SploofID: "806964705008025611",
-		BoardID: "1081308415260885052",
-		NimbusID: "720155708758425670",
-		EddID: "515997929241182238",
-		PastaID: "1190966073571426374",
-	};
-
 	// Check if Channel is contained in ChannelID Enums before posting / checking there
 	isValidID = false;
 	for (var ID in ChannelID) {
@@ -258,7 +264,9 @@ async function callSploogeEvent() {
 	const initDate = "2024-02-12T23:00:00Z"
 	var doc = updateCounter(collection, "splooge", "counter", initDate)
 	writeToPastaCollection(collection)
-	return `<@806964705008025611> has jacked off ${doc.counter} times since ${initDate}`
+	// Why the fuck didn't I use UserID.SploofID here am I FUCKING STUPID
+	//return `<@806964705008025611> has jacked off ${doc.counter} times since ${initDate}`
+	return `<@${UserID.SploofID}> has jacked off ${doc.counter} times since ${initDate}`
 }
 
 async function callDumpyEvent() {
@@ -282,8 +290,6 @@ function callBannedWordEvent() {
 	return (content =
 		"whoopsie doopsie you did a fuckie wuckie. get timed out lmao");
 }
-
-
 /*API endpoint. If we ever want to fuck around with REST we'll 
 need to move everything into seperate folders and shit*/
 app.get('/', (req, res) => {
