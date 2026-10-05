@@ -4,6 +4,7 @@ require("dotenv").config();
 // const pastaCollection = require("../pastaBot/PastaCollection.json")
 const fs = require("node:fs");
 const path = require("node:path");
+const pastaCollectionPath = "../pastaBot/PastaCollection.json";
 /*const {
 	MongoClient,
 	ServerApiVersion,
@@ -57,7 +58,7 @@ function readPastaCollection() {
 		// Pretty sure what's going on here is fs.readFileSync not working with an imported json. 
 		// Gonna try just giving it the relative path.
 		//const data = fs.readFileSync(pastaCollection, 'utf-8')
-		const data = fs.readFileSync("../pastaBot/PastaCollection.json")
+		const data = fs.readFileSync(pastaCollectionPath)
 		return JSON.parse(data)
 	}
 	catch (error) {
@@ -67,7 +68,7 @@ function readPastaCollection() {
 
 function writeToPastaCollection(data) {
 	try {
-		fs.writeFileSync(pastaCollection, JSON.stringify(data, null, 2), 'utf-8')
+		fs.writeFileSync(pastaCollectionPath, JSON.stringify(data, null, 2), 'utf-8')
 	}
 	catch (error) {
 		console.error("Couldn't write to PastaCollection.json:", error)
