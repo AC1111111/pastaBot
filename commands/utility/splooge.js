@@ -18,15 +18,10 @@ module.exports = {
 		.setDescription(
 			"The mf jacked off again didn't he"
 		),
-
+	// Holy shit when I think about what I'm doing, my code is actually readable and short??
 	async execute(interaction) {
-		callSploogeEvent();
 		await interaction.reply({
 			content: await callSploogeEvent(),
 		});
-		// await interaction.reply({
-		// 	content: `<@806964705008025611> has jacked off ${sploogeDoc.jacks - 1
-		// 		} times since ${initDate}`,
-		// });
 	},
 };
